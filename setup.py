@@ -3,9 +3,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+
+
 setuptools.setup(
     name="pynbp",
-    version=pynbp.__version__,
+    version="0.0.1",
     author="Terry Kolody",
     author_email="tekolody@gmail.com",
     description="Python implementation og the HP Tuners Track Addict Numeric Broadcast Protocol (V1.0)",
