@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import time
 from collections import namedtuple
 import logging
 import threading
-import random
 
 import serial
 
-logger = logging.getLogger(__name__)
-
 name='pynpb'
+__version__='0.0.1'
+
+logger = logging.getLogger(__name__)
 
 NbpKPI=namedtuple('NbpKPI', 'name, unit, value')
 
