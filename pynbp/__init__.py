@@ -48,8 +48,8 @@ class PyNBP(threading.Thread):
             if connected and serport.is_open:
                 if packettype in ['UPDATE']:
                     nbppacket=self._genpacket(kpilist=updatelist, type=packettype)
-                if packettype in ['ALL']:
-                    nbppacket=self._genpacket(updatelist=None, type=packettype)
+                elif packettype in ['ALL']:
+                    nbppacket=self._genpacket(kpilist=None, type=packettype)
                 elif packettype in ['METADATA']:
                     nbppacket=self.metedata()
                 else:

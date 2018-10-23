@@ -11,12 +11,12 @@ from pynbp import *
 # METADATA - send only metadata packet
 nbp_queue=queue.Queue()
 
-#pynbp needs serial device (Bluetooth) to communicate to track addict. 
-mypynbp = PyNBP(device='/dev/rfcomm0', nbpqueue=nbp_queue)
+#pynbp needs serial device (Bluetooth) to communicate to track addict.
+mypynbp = PyNBP(device='/dev/rfcomm0', nbpqueue=nbp_queue, device_name='Testing')
 
 # Set as a daemon thread so it terminates when the main does
 mypynbp.daemon = True
-# Start the thread. It will process incoming packets as they get dumped onto the queue. 
+# Start the thread. It will process incoming packets as they get dumped onto the queue.
 mypynbp.start()
 
 testkpis = [
