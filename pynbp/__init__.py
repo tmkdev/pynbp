@@ -23,8 +23,8 @@ Attributes:
             - Packet types 'UPDATE', 'ALL' and 'METADATA' supported
     device: Bluetooth Serial device for comms
     device_name: Device name sent via metadata packet to host
-    protocol_version: NBP1 as defined. 
-    max_update_interval: Minimum interval to send packets. If using this with high rate senders, send 'ALL' packets as updates will miss updates. 
+    protocol_version: NBP1 as defined.
+    max_update_interval: Minimum interval to send packets. If using this with high rate senders, send 'ALL' packets as updates will miss updates.
 
     See racerender docs for unit types.
 
@@ -42,12 +42,12 @@ class PyNBP(threading.Thread):
     def __init__(self, nbpqueue, device='/dev/rfcomm0', device_name='PyNBP', protocol_version='NBP1', min_update_interval=0.2):
         self.device = device
         self.device_name = device_name
-        self.protocol_verion = protocol_verion
+        self.protocol_version = protocol_version
         self.reftime = time.time()
         self.last_update_time = 0
         self.kpis = {}
         self.nbpqueue = nbpqueue
-        self.max_update_interval = max_update_interval
+        self.min_update_interval = min_update_interval
         threading.Thread.__init__(self)
 
 
@@ -97,7 +97,7 @@ class PyNBP(threading.Thread):
 
     def _genpacket(self, type='ALL', kpilist=None):
         reltime = time.time() - self.reftime
-        packet="*{0},{1},{2:.3f}\n".format(self.protocol_verion, type, reltime)
+        packet="*{0},{1},{2:.3f}\n".format(self.protocol_version, type, reltime)
 
         if kpilist and type != 'ALL':
             kpis = [self.kpis[k] for k in kpilist]
