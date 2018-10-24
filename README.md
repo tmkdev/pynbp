@@ -1,12 +1,24 @@
 # pynbp - Python Numeric Broadcast Protocol
 
-This is an implementation of the NBP from Track Addict - V1.0 as per http://racerender.com/TrackAddict/docs/NBP%20Specification%20V1.pdf.
+Python Numeric Broadcast Protocol
 
-Lib is Python3. See example 1 for usage.
+This module implements HP Tuners / Track Addict Numeric Broadcast Protocol
 
-http://
-Numeric Broadcast Protocol (NBP) Devices
+http://racerender.com/TrackAddict/docs/NBP%20Specification%20V1.pdf
 
-Track Addict can receive additional data channels from compatible devices that broadcast data via Numeric Broadcast Protocol (NBP). This is a simple universal format for devices to easily broadcast data to apps. See also: NBP Developer Information.
-At the present time, only the Android version of the app supports this, and the device must use a conventional Bluetooth serial connection (SPP).
+Example:
+        $ python examples/example1.py
 
+Attributes:
+    nbpqueue - queue.Queue() for sending pauloads into the class
+        - Format: tuple-> ([list of NbpKPIs], 'PACKETTYPE')
+            - Packet types 'UPDATE', 'ALL' and 'METADATA' supported
+    device: Bluetooth Serial device for comms
+    device_name: Device name sent via metadata packet to host
+    protocol_version: NBP1 as defined. 
+    max_update_interval: Minimum interval to send packets. If using this with high rate senders, send 'ALL' packets as updates will miss updates. 
+
+    See racerender docs for unit types.
+
+Todo:
+    * None at this time

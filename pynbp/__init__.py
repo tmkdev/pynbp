@@ -15,7 +15,7 @@ This module implements HP Tuners / Track Addict Numeric Broadcast Protocol
 http://racerender.com/TrackAddict/docs/NBP%20Specification%20V1.pdf
 
 Example:
-        $ python example1.py
+        $ python examples/example1.py
 
 Attributes:
     nbpqueue - queue.Queue() for sending pauloads into the class
@@ -32,8 +32,6 @@ Todo:
     * None at this time
 
 """
-
-name='pynpb'
 __version__='0.0.2'
 
 logger = logging.getLogger(__name__)
