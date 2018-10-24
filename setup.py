@@ -10,7 +10,7 @@ setuptools.setup(
     version="0.0.2",
     author="Terry Kolody",
     author_email="tekolody@gmail.com",
-    description="Python implementation og the HP Tuners Track Addict Numeric Broadcast Protocol (V1.0)",
+    description="Python implementation of the HP Tuners Track Addict Numeric Broadcast Protocol (V1.0)",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tmkdev/pynbp",
