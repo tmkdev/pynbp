@@ -10,7 +10,7 @@ Example:
         $ python examples/example1.py
 
 Attributes:
-    nbpqueue - queue.Queue() for sending pauloads into the class
+    nbpqueue - queue.Queue() for sending payloads into the class
         - Format: tuple-> ([list of NbpKPIs], 'PACKETTYPE')
             - Packet types 'UPDATE', 'ALL' and 'METADATA' supported
     device: Bluetooth Serial device for comms
@@ -20,5 +20,11 @@ Attributes:
 
     See racerender docs for unit types.
 
-Todo:
-    * None at this time
+Requirements:
+ -  pyserial
+
+
+Install:
+pip install pynbp
+or
+python setup.py install 
