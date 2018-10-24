@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pynbp",
-    version="0.0.1",
+    version="0.0.2",
     author="Terry Kolody",
     author_email="tekolody@gmail.com",
     description="Python implementation og the HP Tuners Track Addict Numeric Broadcast Protocol (V1.0)",
