@@ -7,6 +7,32 @@ import threading
 
 import serial
 
+"""
+Python Numeric Broadcast Protocol
+
+This module implements HP Tuners / Track Addict Numeric Broadcast Protocol
+
+http://racerender.com/TrackAddict/docs/NBP%20Specification%20V1.pdf
+
+Example:
+        $ python example1.py
+
+Attributes:
+    nbpqueue - queue.Queue() for sending pauloads into the class
+        - Format: tuple-> ([list of NbpKPIs], 'PACKETTYPE')
+            - Packet types 'UPDATE', 'ALL' and 'METADATA' supported
+    device: Bluetooth Serial device for comms
+    device_name: Device name sent via metadata packet to host
+    protocol_version: NBP1 as defined. 
+    max_update_interval: Minimum interval to send packets. If using this with high rate senders, send 'ALL' packets as updates will miss updates. 
+
+    See racerender docs for unit types.
+
+Todo:
+    * None at this time
+
+"""
+
 name='pynpb'
 __version__='0.0.2'
 
@@ -15,7 +41,7 @@ logger = logging.getLogger(__name__)
 NbpKPI=namedtuple('NbpKPI', 'name, unit, value')
 
 class PyNBP(threading.Thread):
-    def __init__(self, nbpqueue, device='/dev/rfcomm0', device_name='PyNBP', protocol_verion='NBP1', max_update_interval=0.2):
+    def __init__(self, nbpqueue, device='/dev/rfcomm0', device_name='PyNBP', protocol_version='NBP1', min_update_interval=0.2):
         self.device = device
         self.device_name = device_name
         self.protocol_verion = protocol_verion
@@ -59,7 +85,7 @@ class PyNBP(threading.Thread):
                 logging.debug(nbppacket)
 
                 try:
-                    if time.time() - self.last_update_time > self.max_update_interval:
+                    if time.time() - self.last_update_time > self.min_update_interval:
                         serport.write(nbppacket)
                         self.last_update_time = time.time()
                 except:
@@ -75,7 +101,7 @@ class PyNBP(threading.Thread):
         reltime = time.time() - self.reftime
         packet="*{0},{1},{2:.3f}\n".format(self.protocol_verion, type, reltime)
 
-        if kpilist:
+        if kpilist and type != 'ALL':
             kpis = [self.kpis[k] for k in kpilist]
         else:
             kpis = self.kpis.values()
