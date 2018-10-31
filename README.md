@@ -11,8 +11,7 @@ Example:
 
 Attributes:
     nbpqueue - queue.Queue() for sending payloads into the class
-        - Format: tuple-> ([list of NbpKPIs], 'PACKETTYPE')
-            - Packet types 'UPDATE', 'ALL' and 'METADATA' supported
+        - Format: NbpPayload(timetamp, packettype, kpilist)
     device: Bluetooth Serial device for comms
     device_name: Device name sent via metadata packet to host
     protocol_version: NBP1 as defined. 

@@ -13,9 +13,10 @@ Python Numeric Broadcast Protocol
 This module implements HP Tuners / Track Addict Numeric Broadcast Protocol
 """
 
-__version__='0.0.3'
+__version__='0.0.4'
 logger = logging.getLogger(__name__)
-NbpKPI=namedtuple('NbpKPI', 'name, unit, value')
+NbpKPI = namedtuple('NbpKPI', 'name, unit, value')
+NbpPayload = namedtuple('NbpPayload', 'timestamp, packettype, nbpkpilist')
 
 class PyNBP(threading.Thread):
     def __init__(self, nbpqueue, device='/dev/rfcomm0', device_name='PyNBP', protocol_version='NBP1', min_update_interval=0.2):
@@ -24,6 +25,7 @@ class PyNBP(threading.Thread):
         self.protocol_version = protocol_version
         self.reftime = time.time()
         self.last_update_time = 0
+        self.packettime = 0
         self.kpis = {}
         self.nbpqueue = nbpqueue
         self.min_update_interval = min_update_interval
@@ -35,14 +37,19 @@ class PyNBP(threading.Thread):
         serport=None
 
         while True:
-            nbpkpis, packettype = self.nbpqueue.get()
+            nbppayload = self.nbpqueue.get()
+
+            self.packettime = nbppayload.timestamp
 
             updatelist = []
-            for kpi in nbpkpis:
+            for kpi in nbppayload.nbpkpilist:
                 updatelist.append(kpi.name)
                 self.kpis[kpi.name] = kpi
 
             if not connected:
+                if time.time() - self.last_update_time > self.min_update_interval:
+                    self.last_update_time = time.time()
+
                 try:
                     serport=serial.Serial(self.device)
                     connected=True
@@ -50,11 +57,11 @@ class PyNBP(threading.Thread):
                     logging.warning('Comm Port conection failed - waiting for connection')
 
             if connected and serport.is_open:
-                if packettype in ['UPDATE']:
-                    nbppacket=self._genpacket(kpilist=updatelist, type=packettype)
-                elif packettype in ['ALL']:
-                    nbppacket=self._genpacket(kpilist=None, type=packettype)
-                elif packettype in ['METADATA']:
+                if nbppayload.packettype == 'UPDATE':
+                    nbppacket=self._genpacket(kpilist=updatelist, type=nbppayload.packettype)
+                elif nbppayload.packettype == 'ALL':
+                    nbppacket=self._genpacket(kpilist=None, type=nbppayload.packettype)
+                elif nbppayload.packettype == 'METADATA':
                     nbppacket=self.metedata()
                 else:
                     logging.warning('Invalid packet type {0}.'.format(packettype))
@@ -75,7 +82,7 @@ class PyNBP(threading.Thread):
         return str.encode("@NAME:{0}\n".format(self.device_name))
 
     def _genpacket(self, type='ALL', kpilist=None):
-        reltime = time.time() - self.reftime
+        reltime = self.packettime - self.reftime
         packet="*{0},{1},{2:.3f}\n".format(self.protocol_version, type, reltime)
 
         if kpilist and type != 'ALL':

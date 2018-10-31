@@ -25,7 +25,9 @@ testkpis = [
         NbpKPI(name='Gear', unit=None, value=random.randint(1,6)),
 ]
 
-nbp_queue.put((testkpis, 'UPDATE'))
+payload = NbpPayload(timestamp=time.time(), 'UPDATE', testkpis)
+
+nbp_queue.put(payload)
 
 #Update interval is defaulted to 0.2s so these test sends need to be spaced out longer then 0.2s
 time.sleep(0.3)
@@ -34,10 +36,15 @@ testkpis = [
         NbpKPI(name='Battery', unit="V", value=random.random()*12.0),
 ]
 
-nbp_queue.put((testkpis, 'ALL'))
+payload = NbpPayload(timestamp=time.time(), 'ALL', testkpis)
+
+
+nbp_queue.put(payload)
 
 time.sleep(0.3)
 
-nbp_queue.put(([], 'METADATA'))
+payload = NbpPayload(time.time(), 'METADATA', [])
+
+nbp_queue.put(payload)
 
 time.sleep(0.3)
