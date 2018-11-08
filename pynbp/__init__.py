@@ -23,7 +23,6 @@ class PyNBP(threading.Thread):
         self.device = device
         self.device_name = device_name
         self.protocol_version = protocol_version
-        self.reftime = time.time()
         self.last_update_time = 0
         self.packettime = 0
         self.kpis = {}
@@ -82,8 +81,7 @@ class PyNBP(threading.Thread):
         return str.encode("@NAME:{0}\n".format(self.device_name))
 
     def _genpacket(self, type='ALL'):
-        reltime = self.packettime - self.reftime
-        packet="*{0},{1},{2:.6f}\n".format(self.protocol_version, type, reltime)
+        packet="*{0},{1},{2:.6f}\n".format(self.protocol_version, type, self.packettime)
 
         if self.updatelist and type != 'ALL':
             kpis = [self.kpis[k] for k in self.updatelist]
@@ -100,4 +98,3 @@ class PyNBP(threading.Thread):
         packet+="#\n"
 
         return str.encode(packet)
-
