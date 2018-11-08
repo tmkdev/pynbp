@@ -12,7 +12,7 @@ from pynbp import *
 nbp_queue=queue.Queue()
 
 #pynbp needs serial device (Bluetooth) to communicate to track addict.
-mypynbp = PyNBP(device='/dev/rfcomm0', nbpqueue=nbp_queue, device_name='Testing')
+mypynbp = PyNBP(device='loop://', nbpqueue=nbp_queue, device_name='Testing')
 
 # Set as a daemon thread so it terminates when the main does
 mypynbp.daemon = True
@@ -25,26 +25,32 @@ testkpis = [
         NbpKPI(name='Gear', unit=None, value=random.randint(1,6)),
 ]
 
-payload = NbpPayload(timestamp=time.time(), 'UPDATE', testkpis)
+payload = NbpPayload(timestamp=time.time(), packettype='UPDATE', nbpkpilist=testkpis)
 
 nbp_queue.put(payload)
 
 #Update interval is defaulted to 0.2s so these test sends need to be spaced out longer then 0.2s
 time.sleep(0.3)
 
-testkpis = [
-        NbpKPI(name='Battery', unit="V", value=random.random()*12.0),
-]
+types = [ 'ALL', 'UPDATE']
 
-payload = NbpPayload(timestamp=time.time(), 'ALL', testkpis)
+#Loop test for update interval 
+for i in range(40):
+        testkpis = [
+                NbpKPI(name='Battery', unit="V", value=random.random()*12.0),
+                NbpKPI(name='Gear', unit=None, value=random.randint(1,6)),
+        ]
+        payload = NbpPayload(timestamp=time.time(), packettype=types[i%2], nbpkpilist=testkpis)
+        nbp_queue.put(payload)
 
+        time.sleep(0.03)
 
+payload = NbpPayload(timestamp=time.time(), packettype='ALL', nbpkpilist=[])
+time.sleep(0.3)
 nbp_queue.put(payload)
 
+payload = NbpPayload(time.time(), packettype='METADATA',  nbpkpilist=[])
+
 time.sleep(0.3)
-
-payload = NbpPayload(time.time(), 'METADATA', [])
-
 nbp_queue.put(payload)
-
-time.sleep(0.3)
+time.sleep(0.1)
