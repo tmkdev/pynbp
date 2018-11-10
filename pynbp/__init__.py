@@ -4,6 +4,7 @@ import time
 from collections import namedtuple
 import logging
 import threading
+from pathlib import Path
 
 import serial
 
@@ -14,13 +15,15 @@ This module implements HP Tuners / Track Addict Numeric Broadcast Protocol
 """
 
 __version__='0.0.5'
-logger = logging.getLogger('pynbp')
+home = str(Path.home())
+
 NbpKPI = namedtuple('NbpKPI', 'name, unit, value')
 NbpPayload = namedtuple('NbpPayload', 'timestamp, packettype, nbpkpilist')
 
-fh = logging.FileHandler('~/pynbp.log')
+logger = logging.getLogger('pynbp')
+fh = logging.FileHandler('{0}/pynbp.log'.format(home))
 fh.setLevel(logging.INFO)
-formatter = logging.formatter(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s\n%(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
@@ -60,7 +63,7 @@ class PyNBP(threading.Thread):
                     logging.info('Comm Port conection not open - waiting for connection')
 
             if connected and serport.is_open:
-                if serport.in_waiting:
+                if serport.in_waiting > 0:
                     logger.info(serport.read(serport.in_waiting).decode())
 
                 try:
