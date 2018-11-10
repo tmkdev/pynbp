@@ -90,7 +90,7 @@ class PyNBP(threading.Thread):
 
 
     def metedata(self):
-        return str.encode("@NAME:{0}\n".format(self.device_name))
+        return str.encode("@NAME:{0}\n\n".format(self.device_name))
 
     def _genpacket(self, type='ALL'):
         packet="*{0},{1},{2:.6f}\n".format(self.protocol_version, type, self.packettime)
@@ -107,6 +107,6 @@ class PyNBP(threading.Thread):
             else:
                 packet+='"{0}":{1}\n'.format(kpi.name, kpi.value)
 
-        packet+="#\n"
+        packet+="#\n\n"
 
         return str.encode(packet)
