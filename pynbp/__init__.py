@@ -51,7 +51,7 @@ class PyNBP(threading.Thread):
                     serport=serial.serial_for_url(self.device)
                     connected=True
                 except:
-                    logging.warning('Comm Port conection failed - waiting for connection')
+                    logging.info('Comm Port conection not open - waiting for connection')
 
             if connected and serport.is_open:
                 if serport.in_waiting:
@@ -66,7 +66,7 @@ class PyNBP(threading.Thread):
                         elif nbppayload.packettype == 'METADATA':
                             nbppacket=self.metedata()
                         else:
-                            logging.warning('Invalid packet type {0}.'.format(packettype))
+                            logging.info('Invalid packet type {0}.'.format(packettype))
 
                         logging.warning(nbppacket.decode())
 
