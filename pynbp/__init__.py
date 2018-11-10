@@ -14,9 +14,15 @@ This module implements HP Tuners / Track Addict Numeric Broadcast Protocol
 """
 
 __version__='0.0.5'
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('pynbp')
 NbpKPI = namedtuple('NbpKPI', 'name, unit, value')
 NbpPayload = namedtuple('NbpPayload', 'timestamp, packettype, nbpkpilist')
+
+fh = logging.FileHandler('~/pynbp.log')
+fh.setLevel(logging.INFO)
+formatter = logging.formatter(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 
 class PyNBP(threading.Thread):
     def __init__(self, nbpqueue, device='/dev/rfcomm0', device_name='PyNBP', protocol_version='NBP1', min_update_interval=0.2):
@@ -55,7 +61,7 @@ class PyNBP(threading.Thread):
 
             if connected and serport.is_open:
                 if serport.in_waiting:
-                    logging.debug(serport.read(serport.in_waiting).decode())
+                    logger.info(serport.read(serport.in_waiting).decode())
 
                 try:
                     if time.time() - self.last_update_time > self.min_update_interval:
@@ -68,7 +74,7 @@ class PyNBP(threading.Thread):
                         else:
                             logging.info('Invalid packet type {0}.'.format(packettype))
 
-                        logging.warning(nbppacket.decode())
+                        logger.warning(nbppacket.decode())
 
                         serport.write(nbppacket)
                         self.updatelist = []
