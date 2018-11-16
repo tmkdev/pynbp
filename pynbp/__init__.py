@@ -63,10 +63,10 @@ class PyNBP(threading.Thread):
                     logging.info('Comm Port conection not open - waiting for connection')
 
             if connected and serport.is_open:
-                if serport.in_waiting > 0:
-                    logger.info(serport.read(serport.in_waiting).decode())
-
                 try:
+                    if serport.in_waiting > 0:
+                        logger.info(serport.read(serport.in_waiting).decode())
+
                     if time.time() - self.last_update_time > self.min_update_interval:
                         if nbppayload.packettype == 'UPDATE':
                             nbppacket=self._genpacket(type=nbppayload.packettype)
