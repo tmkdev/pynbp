@@ -14,7 +14,7 @@ Python Numeric Broadcast Protocol
 This module implements HP Tuners / Track Addict Numeric Broadcast Protocol
 """
 
-__version__='0.0.5'
+__version__='0.0.6'
 home = str(Path.home())
 
 NbpKPI = namedtuple('NbpKPI', 'name, unit, value')
