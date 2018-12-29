@@ -130,9 +130,13 @@ class WifiPyNBP(BasePyNBP):
     def run(self):
         connected=False
         serport=None
+        soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1.0)
+        logging.warning('Binding to {0}:{1}'.format(self.ip, self.port))
+        soc.bind((self.ip,self.port))
+        soc.listen(1)
 
-        soc = None
-
+    
         while True:
             nbppayload = self.nbpqueue.get()
 
@@ -145,18 +149,13 @@ class WifiPyNBP(BasePyNBP):
 
             if not connected:
                 try:
-                    soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    soc.bind((self.ip,self.port))
-                    soc.listen(1)
-                    conn, addr = s.accept()
-
-                    logging.warning(conn, addr)
-
+                    conn, client_address = sock.accept()
                     connected=True
+                    logging.warning('Connection from {0} open'.fomat(client_address))
                 except:
                     logging.info('Socket conection not open - waiting for connection')
 
-            if connected and addr:
+            if connected:
                 try:
                     data = conn.recv(1024)
                     if data:
@@ -174,7 +173,7 @@ class WifiPyNBP(BasePyNBP):
 
                         logger.warning(nbppacket.decode())
 
-                        conn.send(nbppacket)
+                        conn.sendall(nbppacket)
                         self.updatelist = []
                         self.last_update_time = time.time()
 
