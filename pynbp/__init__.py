@@ -17,7 +17,7 @@ This module implements HP Tuners / Track Addict Numeric Broadcast Protocol
 WiFI Implementation
 """
 
-__version__='0.0.7'
+__version__='0.0.9'
 home = str(Path.home())
 
 NbpKPI = namedtuple('NbpKPI', 'name, unit, value')
@@ -159,7 +159,11 @@ class WifiPyNBP(BasePyNBP):
                 try:
                     data = conn.recv(1024)
                     if data:
-                        logger.info(data.decode())
+                        text=data.decode().strip()
+                        logger.info(text)
+                        if text == "!ALL":
+                            logging.warning('ALL Packet Requested. Sending')
+                            conn.sendall(self._genpacket('ALL'))
 
                     if time.time() - self.last_update_time > self.min_update_interval:
                         if nbppayload.packettype == 'UPDATE':
