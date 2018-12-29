@@ -34,8 +34,8 @@ time.sleep(0.3)
 
 types = [ 'ALL', 'UPDATE']
 
-#Loop test for update interval 
-for i in range(40):
+#Loop test for update interval
+for i in range(60):
         testkpis = [
                 NbpKPI(name='Battery', unit="V", value=random.random()*12.0),
                 NbpKPI(name='Gear', unit=None, value=random.randint(1,6)),
@@ -43,7 +43,7 @@ for i in range(40):
         payload = NbpPayload(timestamp=time.time(), packettype=types[i%2], nbpkpilist=testkpis)
         nbp_queue.put(payload)
 
-        time.sleep(2)
+        time.sleep(0.5)
 
 payload = NbpPayload(timestamp=time.time(), packettype='ALL', nbpkpilist=[])
 time.sleep(2)

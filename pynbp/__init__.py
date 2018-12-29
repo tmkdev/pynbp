@@ -130,13 +130,13 @@ class WifiPyNBP(BasePyNBP):
     def run(self):
         connected=False
         serport=None
-        soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(1.0)
         logging.warning('Binding to {0}:{1}'.format(self.ip, self.port))
-        soc.bind((self.ip,self.port))
-        soc.listen(1)
+        sock.bind((self.ip,self.port))
+        sock.listen(1)
 
-    
+
         while True:
             nbppayload = self.nbpqueue.get()
 
