@@ -19,6 +19,8 @@ Attributes:
 
     See racerender docs for unit types.
 
+    Supports WiFi / Socket connections now (0.0.7)
+
 Requirements:
  -  pyserial
 
