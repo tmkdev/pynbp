@@ -69,9 +69,9 @@ class BasePyNBP(threading.Thread):
         return str.encode(packet)
 
 
-class PyNBP():
+class PyNBP(BasePyNBP):
     def __init__(self, nbpqueue, device='/dev/rfcomm0', device_name='PyNBP', protocol_version='NBP1', min_update_interval=0.2):
-        super(PyNBP, self).__init__(nbpqueue, device_name='PyNBP', protocol_version='NBP1', min_update_interval=0.2)
+        super().__init__(nbpqueue, device_name=device_name, protocol_version=protocol_version, min_update_interval=min_update_interval)
         self.device = device
 
     def run(self):
@@ -121,9 +121,9 @@ class PyNBP():
                     serport.close()
                     connected = False
 
-class WifiPyNBP():
+class WifiPyNBP(BasePyNBP):
     def __init__(self, nbpqueue, ip='127.0.0.1', port=35000, device_name='PyNBP', protocol_version='NBP1', min_update_interval=0.2):
-        super(PyNBP, self).__init__(nbpqueue, device_name='PyNBP', protocol_version='NBP1', min_update_interval=0.2)
+        super().__init__(nbpqueue, device_name=device_name, protocol_version=protocol_version, min_update_interval=min_update_interval)
         self.ip = ip
         self.port = port
 
@@ -146,9 +146,11 @@ class WifiPyNBP():
             if not connected:
                 try:
                     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    s.bind((self.ip,self.port))
-                    s.listen(1)         
+                    soc.bind((self.ip,self.port))
+                    soc.listen(1)
                     conn, addr = s.accept()
+
+                    logging.warning(conn, addr)
 
                     connected=True
                 except:

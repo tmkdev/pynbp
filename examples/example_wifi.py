@@ -12,7 +12,7 @@ from pynbp import *
 nbp_queue=queue.Queue()
 
 #pynbp needs serial device (Bluetooth) to communicate to track addict.
-mypynbp = WifiPyNBP(ip='127.0.0.1', port=35000, nbpqueue=nbp_queue, device_name='Testing')
+mypynbp = WifiPyNBP(ip='192.168.1.208', port=35000, nbpqueue=nbp_queue, device_name='Testing')
 
 # Set as a daemon thread so it terminates when the main does
 mypynbp.daemon = True
@@ -43,14 +43,14 @@ for i in range(40):
         payload = NbpPayload(timestamp=time.time(), packettype=types[i%2], nbpkpilist=testkpis)
         nbp_queue.put(payload)
 
-        time.sleep(0.03)
+        time.sleep(2)
 
 payload = NbpPayload(timestamp=time.time(), packettype='ALL', nbpkpilist=[])
-time.sleep(0.3)
+time.sleep(2)
 nbp_queue.put(payload)
 
 payload = NbpPayload(time.time(), packettype='METADATA',  nbpkpilist=[])
 
-time.sleep(0.3)
+time.sleep(2)
 nbp_queue.put(payload)
-time.sleep(0.1)
+time.sleep(2)
